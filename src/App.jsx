@@ -16,7 +16,7 @@ const USERS = [
 const TICKER_MAP = {
   "SOSI1": { yahoo: "SOSI1.HE", currency: "EUR" },
    "LGO": { yahoo: "LGO.TO", currency: "CAD" },
-   "GPX": { yahoo: "GPX.L", currency: "GBP" },
+   "FAR.L": { yahoo: "FAR.L", currency: "GBX" },
   // Lisää tähän tarpeen mukaan:
   // "NOKIA": { yahoo: "NOKIA.HE", currency: "EUR" },
   // "SAMPO": { yahoo: "SAMPO.HE", currency: "EUR" },
