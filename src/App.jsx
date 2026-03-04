@@ -229,8 +229,8 @@ function HoldingsTable({ holdings, color, prices, rates, pricesLoading }) {
       <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
         <thead>
           <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-                  {["TICKER", "KPL", "KESKIM.", "NYTHINTA", "ARVO (€)", "TUOTTO"].map(h => (
-                    <th key={h} style={{ fontSize: 10, letterSpacing: 2, color: "#64748b", textTransform: "uppercase", padding: "8px 6px", textAlign: h === "TICKER" ? "left" : "right", whiteSpace: "nowrap" }}>{h}</th>
+            {["TICKER", "KPL", "KESKIM.", "NYTHINTA", "ARVO (€)", "TUOTTO"].map(h => (
+              <th key={h} style={{ fontSize: 10, letterSpacing: 2, color: "#64748b", textTransform: "uppercase", padding: "8px 6px", textAlign: h === "TICKER" ? "left" : "right", whiteSpace: "nowrap" }}>{h}</th>
             ))}
           </tr>
         </thead>
