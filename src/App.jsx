@@ -5,8 +5,8 @@ import { writeTrade, deleteTrade as fbDeleteTrade, subscribeTrades } from "./fir
 // KÄYTTÄJÄASETUKSET
 // ═══════════════════════════════════════════════════
 const USERS = [
-  { id: "simo", name: "Simo", pin: "1111", color: "#10b981", icon: "◈" },
-  { id: "veli", name: "Veli", pin: "2222", color: "#3b82f6", icon: "◇" },
+  { id: "simo", name: "Simo", pin: "2608", color: "#10b981", icon: "◈" },
+  { id: "jere", name: "Jere", pin: "2110", color: "#3b82f6", icon: "◇" },
 ];
 
 // ═══════════════════════════════════════════════════
@@ -15,7 +15,8 @@ const USERS = [
 // ═══════════════════════════════════════════════════
 const TICKER_MAP = {
   "SOSI1": { yahoo: "SOSI1.HE", currency: "EUR" },
-  "LGO":   { yahoo: "LGO.TO",   currency: "CAD" },
+   "LGO": { yahoo: "LGO.TO", currency: "CAD" },
+   "GPX": { yahoo: "GPX.L", currency: "GBP" },
   // Lisää tähän tarpeen mukaan:
   // "NOKIA": { yahoo: "NOKIA.HE", currency: "EUR" },
   // "SAMPO": { yahoo: "SAMPO.HE", currency: "EUR" },
