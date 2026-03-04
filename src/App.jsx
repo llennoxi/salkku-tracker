@@ -14,17 +14,27 @@ const USERS = [
 // US-osakkeet toimivat sellaisenaan (IREN, GROY jne.)
 // ═══════════════════════════════════════════════════
 const TICKER_MAP = {
+const TICKER_MAP = {
   "SOSI1": { yahoo: "SOSI1.HE", currency: "EUR" },
-   "LGO": { yahoo: "LGO.TO", currency: "CAD" },
-   "FAR.L": { yahoo: "FAR.L", currency: "GBP" },
-   "EQR.AX": { yahoo: "EQR.AX", currency: "AUD" },
+  "LGO":   { yahoo: "LGO.TO",   currency: "CAD" },
+  "FAR.L": { yahoo: "FAR.L",    currency: "GBX" },
+};
 };
 
 // Oletusvaluutta tickerille jos ei TICKER_MAP:issa
 const DEFAULT_CURRENCY = "USD";
 
-const CURRENCIES = ["USD", "EUR", "CAD", "AUD", "GBP", "SEK", "NOK", "DKK"];
-const CURRENCY_SYMBOLS = { USD: "$", EUR: "€", CAD: "C$", AUD: "A$", GBP: "£", SEK: "kr", NOK: "kr", DKK: "kr" };
+// Muunna API-hinta näyttövaluuttaan (API palauttaa GBP, mutta näytetään GBX)
+function toDisplayPrice(apiPrice, apiCurrency, displayCurrency) {
+  if (!apiPrice) return null;
+  if (displayCurrency === "GBX" && (apiCurrency === "GBP" || apiCurrency === "GBp")) {
+    return apiPrice * 100;
+  }
+  return apiPrice;
+}
+
+const CURRENCIES = ["USD", "EUR", "CAD", "AUD", "GBP", "GBX", "SEK", "NOK", "DKK"];
+const CURRENCY_SYMBOLS = { USD: "$", EUR: "€", CAD: "C$", AUD: "A$", GBP: "£", GBX: "p", SEK: "kr", NOK: "kr", DKK: "kr" };
 
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 const today = () => new Date().toISOString().slice(0, 10);
@@ -90,8 +100,15 @@ function calcPortfolio(trades, userId) {
 // ── Valuuttamuunnos EUR:oon ──
 function toEUR(amount, currency, rates) {
   if (!currency || currency === "EUR") return amount;
+  // GBX (pence) → GBP → EUR
+  if (currency === "GBX" || currency === "GBp") {
+    const gbpAmount = amount / 100;
+    const rate = rates["GBP"];
+    if (!rate) return gbpAmount;
+    return gbpAmount * rate;
+  }
   const rate = rates[currency];
-  if (!rate) return amount; // fallback: palauta sellaisenaan
+  if (!rate) return amount;
   return amount * rate;
 }
 
@@ -226,7 +243,11 @@ function HoldingsTable({ holdings, color, prices, rates, pricesLoading }) {
             const liveCur = prices[ticker]?.currency || cur;
             const dayChange = prices[ticker]?.changePercent;
 
-            // Arvo euroissa
+            // Näyttöhinta käyttäjän valuutassa (esim. GBX)
+            const displayPrice = toDisplayPrice(livePrice, liveCur, cur);
+            const displayCur = cur;
+
+            // Arvo euroissa (käyttää API:n alkuperäistä hintaa)
             const costEUR = toEUR(h.totalCost, cur, rates);
             const liveValueEUR = livePrice ? toEUR(h.shares * livePrice, liveCur, rates) : null;
             const pl = liveValueEUR !== null ? liveValueEUR - costEUR : null;
@@ -243,9 +264,9 @@ function HoldingsTable({ holdings, color, prices, rates, pricesLoading }) {
                   {fmt(h.avgPrice)} <span style={{ fontSize: 10, color: "#475569" }}>{cs(cur)}</span>
                 </td>
                 <td style={{ padding: "11px 6px", textAlign: "right" }}>
-                  {livePrice !== null && livePrice !== undefined ? (
+                  {displayPrice !== null && displayPrice !== undefined ? (
                     <div>
-                      <div style={{ color: "#e2e8f0", fontWeight: 600 }}>{fmt(livePrice)} <span style={{ fontSize: 10, color: "#475569" }}>{cs(liveCur)}</span></div>
+                      <div style={{ color: "#e2e8f0", fontWeight: 600 }}>{fmt(displayPrice)} <span style={{ fontSize: 10, color: "#475569" }}>{cs(displayCur)}</span></div>
                       {dayChange !== undefined && dayChange !== 0 && (
                         <div style={{ fontSize: 10, color: plColor(dayChange) }}>{pctFmt(dayChange)}</div>
                       )}
