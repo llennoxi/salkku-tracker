@@ -10,11 +10,9 @@ export default async function handler(req, res) {
   const tickerList = tickers.split(",").map(t => t.trim()).filter(Boolean);
   if (tickerList.length === 0) return res.status(400).json({ error: "No valid tickers" });
 
-  // Valuuttaparit EUR:oon
   const fxPairs = ["USDEUR=X", "CADEUR=X", "AUDEUR=X", "GBPEUR=X", "SEKEUR=X", "NOKEUR=X", "DKKEUR=X"];
 
   try {
-    // Hae osakehinnat Yahoo v8 chart endpointista (yksi kerrallaan)
     const pricePromises = tickerList.map(async (symbol) => {
       try {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1d&interval=1d`;
@@ -25,14 +23,24 @@ export default async function handler(req, res) {
         const data = await response.json();
         const meta = data?.chart?.result?.[0]?.meta;
         if (!meta) return [symbol, null];
+
+        let price = meta.regularMarketPrice || null;
+        let prevClose = meta.chartPreviousClose || meta.previousClose || null;
+        let currency = meta.currency || "USD";
+
+        // GBp (pence) → muunna GBP:ksi
+        if (currency === "GBp" || currency === "GBX") {
+          if (price) price = price / 100;
+          if (prevClose) prevClose = prevClose / 100;
+          currency = "GBP";
+        }
+
         return [symbol, {
-          price: meta.regularMarketPrice || null,
-          previousClose: meta.chartPreviousClose || meta.previousClose || null,
-          change: meta.regularMarketPrice && meta.chartPreviousClose
-            ? meta.regularMarketPrice - meta.chartPreviousClose : 0,
-          changePercent: meta.regularMarketPrice && meta.chartPreviousClose
-            ? ((meta.regularMarketPrice - meta.chartPreviousClose) / meta.chartPreviousClose) * 100 : 0,
-          currency: meta.currency || "USD",
+          price,
+          previousClose: prevClose,
+          change: price && prevClose ? price - prevClose : 0,
+          changePercent: price && prevClose ? ((price - prevClose) / prevClose) * 100 : 0,
+          currency,
           name: meta.shortName || meta.longName || symbol,
           marketState: meta.marketState || "CLOSED",
         }];
@@ -41,7 +49,6 @@ export default async function handler(req, res) {
       }
     });
 
-    // Hae valuuttakurssit
     const fxPromises = fxPairs.map(async (pair) => {
       try {
         const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(pair)}?range=1d&interval=1d`;
@@ -63,7 +70,6 @@ export default async function handler(req, res) {
       Promise.all(fxPromises),
     ]);
 
-    // Kooste hinnoista
     const prices = {};
     priceResults.forEach(([symbol, data]) => {
       prices[symbol] = data || {
@@ -72,7 +78,6 @@ export default async function handler(req, res) {
       };
     });
 
-    // Kooste valuuttakursseista
     const rates = { EUR: 1 };
     fxResults.forEach(([pair, rate]) => {
       if (rate) {
