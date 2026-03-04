@@ -7,13 +7,13 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, onValue, remove } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "KORVAA_TÄMÄ",
-  authDomain: "KORVAA_TÄMÄ.firebaseapp.com",
-  databaseURL: "https://KORVAA_TÄMÄ-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "KORVAA_TÄMÄ",
-  storageBucket: "KORVAA_TÄMÄ.appspot.com",
-  messagingSenderId: "KORVAA_TÄMÄ",
-  appId: "KORVAA_TÄMÄ",
+  apiKey: "AIzaSyDHU9uMdrPazcOpqudvEAOCaTVxSmgOuMQ",
+  authDomain: "salkku-tracker.firebaseapp.com",
+  databaseURL: "https://salkku-tracker-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "salkku-tracker",
+  storageBucket: "salkku-tracker.firebasestorage.app",
+  messagingSenderId: "918484652812",
+  appId: "1:918484652812:web:5eca5154b72e6ed710af29",
 };
 
 const app = initializeApp(firebaseConfig);
