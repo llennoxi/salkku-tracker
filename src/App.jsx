@@ -14,11 +14,9 @@ const USERS = [
 // US-osakkeet toimivat sellaisenaan (IREN, GROY jne.)
 // ═══════════════════════════════════════════════════
 const TICKER_MAP = {
-const TICKER_MAP = {
   "SOSI1": { yahoo: "SOSI1.HE", currency: "EUR" },
   "LGO":   { yahoo: "LGO.TO",   currency: "CAD" },
   "FAR.L": { yahoo: "FAR.L",    currency: "GBX" },
-};
 };
 
 // Oletusvaluutta tickerille jos ei TICKER_MAP:issa
