@@ -17,9 +17,6 @@ const TICKER_MAP = {
   "SOSI1": { yahoo: "SOSI1.HE", currency: "EUR" },
    "LGO": { yahoo: "LGO.TO", currency: "CAD" },
    "FAR.L": { yahoo: "FAR.L", currency: "GBP" },
-  // Lisää tähän tarpeen mukaan:
-  // "NOKIA": { yahoo: "NOKIA.HE", currency: "EUR" },
-  // "SAMPO": { yahoo: "SAMPO.HE", currency: "EUR" },
 };
 
 // Oletusvaluutta tickerille jos ei TICKER_MAP:issa
