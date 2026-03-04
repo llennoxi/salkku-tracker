@@ -347,7 +347,7 @@ export default function App() {
 
   const portfolios = useMemo(() => ({
     simo: calcPortfolio(allTrades, "simo"),
-    veli: calcPortfolio(allTrades, "veli"),
+    jere: calcPortfolio(allTrades, "jere"),
   }), [allTrades]);
 
   const allHoldings = useMemo(() => {
